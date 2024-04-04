@@ -8,17 +8,28 @@ class UserRepository {
             return user;
         } catch (error) {
             console.log("Something went wrong in the repository layer");
-            throw {error}
+            throw { error }
         }
     }
     async destroy(userId) {
         try {
             const user = await User.destroy({
-                where:{
-                    id:userId
+                where: {
+                    id: userId
                 }
             })
             return true;
+        } catch (error) {
+            console.log("Something went wrong in the repository layer");
+            throw { error }
+        }
+    }
+    async getById(userId) {
+        try {
+            const user = await User.findByPk(userId,{
+                attributes:['email','id']
+            });
+            return user;
         } catch (error) {
             console.log("Something went wrong in the repository layer");
             throw { error }

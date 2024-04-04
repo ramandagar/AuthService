@@ -28,4 +28,34 @@ const create = async (req, res) => {
     }
 }
 
-module.exports = { create };
+const destroy = async (req, res) => {
+    try {
+        const response = await userService.destroy(req.params.id);
+        return res.status(200).json({
+            success: true,
+            message: 'Successfully deleted a user',
+            data: response,
+            err: {}
+        })
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            message: 'Something went wrong',
+            data:{},
+            success: false,
+            err: error,
+        })
+    }
+}
+
+const getById = async (req, res) => {
+    try {
+        
+    } catch (error) {
+        
+    }
+}
+module.exports = {
+     create,
+     destroy,
+    };
