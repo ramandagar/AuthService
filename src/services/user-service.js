@@ -37,9 +37,9 @@ class UserService {
         }
     }
 
-    createToken(user){
+    createToken(user) {
         try {
-            const result = jwt.sign({user},JWT_KEY, {expiresIn:'1h'});
+            const result = jwt.sign({ user }, JWT_KEY, { expiresIn: '1h' });
             return result
         } catch (error) {
             console.log("Something went wrong in service layer");
@@ -47,7 +47,7 @@ class UserService {
         }
     }
 
-    verifyToken(token){
+    verifyToken(token) {
         try {
             const response = jwt.verify(token, JWT_KEY);
             return response;
@@ -56,9 +56,40 @@ class UserService {
             throw { error }
         }
     }
-    checkPassword(userInputPlainPassword,encryptPassword){
+
+ async signIn(email, plainPassword) {
+     try {
+         const user = await this.userRepository.getByEmail(email);
+         const passwordMatch = this.checkPassword(plainPassword, user.password);
+         if (!passwordMatch) {
+             console.log("Password doesn't match");
+             throw { error: "Incorrect Password" }
+         }
+         //create a token and return it
+         const newJWT = this.createToken(user);
+         return newJWT;
+     } catch (error) {
+         console.log("Something went wrong in service layer");
+         throw { error }
+     } 
+ } 
+
+
+
+
+
+    checkPassword(userInputPlainPassword, encryptPassword) {
         try {
-            
+            return bcrypt.compareSync(userInputPlainPassword, encryptPassword);
+        } catch (error) {
+            console.log("Something went wrong in service layer");
+            throw { error }
+        }
+    }
+
+    async getByEmail(userEmail) {
+        try {
+            const user = await User.findOne()
         } catch (error) {
             console.log("Something went wrong in service layer");
             throw { error }
