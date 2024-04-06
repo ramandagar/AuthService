@@ -3,6 +3,9 @@ const app = express()
 const apiRoutes = require('./routes/index')
 const { PORT } = require('./config/ServerConfig')
 const bodyParser = require('body-parser')
+const db  = require('./models/index')
+
+const {User,Role} = require('./models/index')
 
 const UserService = require('./services/user-service')
 const prepareAndStartServer = () => {
@@ -19,6 +22,14 @@ app.use('/api', apiRoutes)
     //    const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoxLCJlbWFpbCI6InJhbWFuMkBnbWFpbC5jb20ifSwiaWF0IjoxNzEyMjI0NjAzLCJleHAiOjE3MTIyMjgyMDN9.JEx1eLMCzQBx3SY6UsKcSU3Q7kslig4rSUJruC5AkQg'
     //    const response = service.verifyToken(token)
     //    console.log(response)
+    
+    if(process.env.DB_SYNC){
+        db.sequelize.sync({alter: true})
+    }
+
+    const u1  = await User.findByPk(1)
+    const r1 = await Role.findByPk(2)
+    u1.addRole(r1);
 
     }) 
 }

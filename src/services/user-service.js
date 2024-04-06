@@ -75,7 +75,22 @@ class UserService {
  } 
 
 
-
+async isAuthenticated(token) {
+    try {
+        const response = this.verifyToken(token);
+        if(!response){
+            throw {error: "Invalid token"}
+        }
+        const user = await this.userRepository.getById(response?.id);
+        if(!user){
+            throw {error: "No user found with this token"}
+        }
+        return user.id;
+    } catch (error) {
+        console.log("Something went wrong in service layer");
+        throw { error }
+    }
+}
 
 
     checkPassword(userInputPlainPassword, encryptPassword) {
@@ -89,7 +104,8 @@ class UserService {
 
     async getByEmail(userEmail) {
         try {
-            const user = await User.findOne()
+            const user = await this.userRepository.getByEmail(userEmail);
+            return user;
         } catch (error) {
             console.log("Something went wrong in service layer");
             throw { error }
